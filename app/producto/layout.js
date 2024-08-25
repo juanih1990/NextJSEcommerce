@@ -4,7 +4,7 @@ import NavegationMenu from '../componentes/NavegationMenu'
 const layout = ({children}) => {
   return (
     <div>
-        <NavegationMenu/>
+        <NavegationMenu />
         {children}
     </div>
   )

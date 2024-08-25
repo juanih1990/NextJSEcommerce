@@ -1,30 +1,21 @@
-'use client'
-import React from 'react'
-import mockData from '../data/mockData'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import React from 'react';
+import CategorySelected from './CategorySelected';
 
-function getUniqueCategorys(data) {
-    const category = data.map(item => item.category)
-    return [...new Set(category)]
+
+// Función para obtener categorías únicas
+const getUniqueCategories = (data) => {
+    const categories = data.map(item => item.category);
+    return [...new Set(categories)];
 }
-const NavegationMenu = () => {
-    const category = getUniqueCategorys(mockData)
-    console.log(category)
-    const path = usePathname()
+
+const NavegationMenu = async () => {
+    const data = await fetch('http://localhost:3000/api/producto/all', { cache: 'no-store' }).then(r => r.json());
+    const categories = getUniqueCategories(data); // Extraer categorías únicas
+    
     return (
-        <div className='bg-gray-800 p-4'>
-            <ul className='flex space-x-4 justify-center'>
-                {
-                    category.map((items, index) => (                      
-                        <li key={index} className={`text-white ${path === `/producto/${items.toLowerCase().trim()}` ? "underline underline-offset-8" : "no-underline"}`}>
-                            <Link href={`/producto/${items.toLowerCase()}`}>{items}</Link>
-                        </li>
-                    ))
-                }
-            </ul>
-        </div>
-    )
-}
+       <CategorySelected  categories = {categories} />
+    );
+};
 
-export default NavegationMenu
+export default NavegationMenu;
+

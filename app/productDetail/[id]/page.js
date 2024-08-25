@@ -1,11 +1,17 @@
-'use client'
-import mockData from '@/app/data/mockData'
-import { useParams } from 'next/navigation'
 import React from 'react'
 
-const ProductDetail = () => {
-    const { id } = useParams()
-    const singleProduct = mockData.find(item => item.id == id)
+const ProductDetail = async ({params}) => {
+    const { id } = params
+    
+    // Llamada a la API para obtener los detalles del producto
+    const singleProduct = await fetch(`http://localhost:3000/api/productById/${id}`, { cache: 'no-store' })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch product');
+            }
+            return response.json();
+        });
+
     return (
             <div className='max-w-sm rounded overflow-hidden shadow-lg m-4 bg-white'>
                 <div className='py-4 px-6'>
