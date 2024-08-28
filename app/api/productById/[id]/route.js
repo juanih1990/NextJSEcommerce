@@ -8,11 +8,11 @@ export async function GET(request, { params }) {
     // Referencia directa al documento con el ID especificado
     const productoRef = doc(db, "Productos", id);
 
-    // Obtén el documento
+    // Obtengo el documento 
     const docSnapshot = await getDoc(productoRef);
 
     if (docSnapshot.exists()) {
-        // Si el documento existe, devolver los datos del producto
+        // Si el documento existe, devuelvo los datos del producto
         const productData = {
             id: docSnapshot.id,
             ...docSnapshot.data()

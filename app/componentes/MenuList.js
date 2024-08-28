@@ -1,7 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useCartContext } from './context/cartContext'
 const MenuList = ({ open, handleClose }) => {
+    const { count } = useCartContext()
     const links = [
         {
             label: "Productos",
@@ -12,8 +14,8 @@ const MenuList = ({ open, handleClose }) => {
             href: "/contactanos"
         },
         {
-            label: "carrito",
-            href: "/carrito"
+            label: "cart",
+            href: "/cart"
         },
         {
             label: "admin",
@@ -33,12 +35,22 @@ const MenuList = ({ open, handleClose }) => {
                     {
                         links.map((link) => {
                             return (
-                            <Link key={link.label} href={link.href} className='text-base p-3 text-white focus:text-slate-300 hover:text-slate-300 hover:bg-cyan-600 transition-colors duration-200 ' onClick={handleClose} >
-                               {link.label == 'carrito'  ?  <Image  src='/cartSvg.svg' alt="carrito de compras" width={25} height={25} className='text-base  text-white focus:text-slate-300 hover:text-slate-300 transition-colors duration-200 ' />  : link.label}
-                            </Link>
-                             )
+                                <Link
+                                    key={link.label}
+                                    href={link.href}
+                                    className='text-base p-3 text-white focus:text-slate-300 hover:text-slate-300 hover:bg-cyan-600 transition-colors duration-200 '
+                                    onClick={handleClose} >
+                                    {link.label == 'cart' ? (
+                                        <>
+                                            <Image src='/cartSvg.svg' alt="carrito de compras" width={25} height={25} className='text-base  text-white focus:text-slate-300 hover:text-slate-300 transition-colors duration-200 ' />
+                                            <span className='m-6 rounded-full border p-2 bg-yellow-500'>{count}</span> 
+                                        </>) : (
+                                        link.label
+                                    )}
+                                </Link>
+                            )
                         })
-                     
+
                     }
                 </nav>
             </aside>

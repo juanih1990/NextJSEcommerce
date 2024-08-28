@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { useState } from 'react'
+import Boton from './Boton'
 
 const CreateProduct = () => {
     const [values, setValues] = useState({
@@ -22,6 +23,7 @@ const CreateProduct = () => {
         e.preventDefault()
         console.log(values)
     }
+    // <button type='submit' className='border border-blue-200 text-zinc-800 p-3 bg-emerald-200 rounded'>Enviar</button>
     return (
         <div className='container m-auto mt-6 max-w-lg'>
             <form onSubmit={handleSubmit} className='my-12'>
@@ -73,8 +75,8 @@ const CreateProduct = () => {
                 name='description'
                 onChange={handleChange}
                 ></textarea>
-
-                <button type='submit' className='border border-blue-200 text-zinc-800 p-3 bg-emerald-200 rounded'>Enviar</button>
+                <Boton type='submit'>Enviar</Boton>
+               
             </form>
 
         </div>
