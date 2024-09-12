@@ -1,9 +1,10 @@
 import React from 'react'
+import ProductTable from '../componentes/admin/ProductTable'
 
 const page = () => {
   return (
     <div>
-        <h1  className='text-cyan-500'>admin</h1>
+         <ProductTable/>
     </div>
   )
 }

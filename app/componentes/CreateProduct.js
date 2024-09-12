@@ -2,6 +2,32 @@
 import React from 'react'
 import { useState } from 'react'
 import Boton from './Boton'
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
+import { db, storage } from "@/app/firebase/config"
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+
+
+const createProduct = async (values, file) => {
+    const collectionRef = collection(db, 'Productos'); // Referencia a la colección
+    const docRef = doc(collectionRef);
+    console.log(file)
+    let fileUrls = '';
+    if (file) { // Verificar si hay un archivo
+        const storageRef = ref(storage, docRef.id); // Crear una referencia de almacenamiento con el ID del documento
+        const fileSnapshot = await uploadBytes(storageRef, file); // Subir el archivo
+        fileUrls = await getDownloadURL(fileSnapshot.ref); // Obtener la URL de descarga
+    }
+
+
+    const productData = {
+        ...values,
+        image: fileUrls // Asigna la URL de la imagen
+    };
+    //const docRef = doc(collectionRef)
+    console.log("Esto trae fileUrls: " , fileUrls)
+    console.log(JSON.stringify(productData))
+    return setDoc(docRef, productData).then(() => console.log("Producto Agregado! ", JSON.stringify(productData)))
+}
 
 const CreateProduct = () => {
     const [values, setValues] = useState({
@@ -12,18 +38,27 @@ const CreateProduct = () => {
         category: ''
     })
 
+    const [file, setFile] = useState(null)
+
     const handleChange = (e) => {
-        setValues({
-            ...values,
-            [e.target.name]: e.target.value
-        })
+        
+        if (e.target.type === 'file') {
+            setFile(e.target.files[0]); // Guardar el archivo seleccionado en el estado
+        } else {
+            setValues({
+                ...values,
+                [e.target.name]: e.target.value
+            });
+        }
+        
+       
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(values)
+        await createProduct(values,file)
     }
-    // <button type='submit' className='border border-blue-200 text-zinc-800 p-3 bg-emerald-200 rounded'>Enviar</button>
+
     return (
         <div className='container m-auto mt-6 max-w-lg'>
             <form onSubmit={handleSubmit} className='my-12'>
@@ -37,6 +72,13 @@ const CreateProduct = () => {
                     name='title'
                     onChange={handleChange}
                 ></input>
+
+                <label className='text-zinc-800'>Imagen del Producto: </label>
+                <input
+                    type='file'
+                    className='p-2 rounded w-full border border-blue-100 block my-4 text-zinc-600'
+                    onChange={handleChange}
+                />
 
                 <label className='text-zinc-800'>Precio: </label>
                 <input
@@ -70,13 +112,13 @@ const CreateProduct = () => {
 
                 <label className='text-zinc-800'>Descripcion: </label>
                 <textarea
-                value={values.description}
-                className='resize-none w-full h-24 p-2 rounded border block border-blue-100 my-4 text-zinc-600'
-                name='description'
-                onChange={handleChange}
+                    value={values.description}
+                    className='resize-none w-full h-24 p-2 rounded border block border-blue-100 my-4 text-zinc-600'
+                    name='description'
+                    onChange={handleChange}
                 ></textarea>
                 <Boton type='submit'>Enviar</Boton>
-               
+
             </form>
 
         </div>

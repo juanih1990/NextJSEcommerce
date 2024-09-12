@@ -13,8 +13,8 @@ const AddTocart = ({ title, description, price, category, id }) => {
     };
  
     return (
-        <div className='flex'>
-            <Boton onClick={handleAdd} className='bg-blue-400 mb-2 ml-auto mr-2'>Agregar al carrito</Boton>
+        <div className='flex justify-end mt-3'>
+            <Boton onClick={handleAdd} className='bg-blue-400'>Agregar al carrito</Boton>
         </div>
     )
 }

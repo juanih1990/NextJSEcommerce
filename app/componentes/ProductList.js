@@ -13,6 +13,7 @@ const ProductList = async ({ category }) => {
                             key={product.id}
                             id={product.id}
                             title={product.title}
+                            image={product.image}
                             description={product.description}
                             price={product.price}
                             category={product.category}
