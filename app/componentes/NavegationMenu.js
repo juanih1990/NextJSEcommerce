@@ -9,7 +9,8 @@ const getUniqueCategories = (data) => {
 }
 
 const NavegationMenu = async () => {
-    const data = await fetch('http://localhost:3000/api/producto/all', { cache: 'no-store' }).then(r => r.json());
+    const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+    const data = await fetch(baseUrl + '/api/producto/all', { cache: 'no-store' }).then(r => r.json());
     const categories = getUniqueCategories(data); // Extraer categorías únicas
     
     return (
