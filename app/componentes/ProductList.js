@@ -2,7 +2,9 @@ import React from 'react'
 import ProductCard from './ProductCard'
 
 const ProductList = async ({ category }) => {
-    const data = await fetch(`http://localhost:3000/api/producto/${category}`,
+    console.log("URL_LOCAL:", process.env.NEXT_PUBLIC_URL_LOCAL); 
+
+    const data = await fetch(`${process.env.NEXT_PUBLIC_URL_LOCAL}/api/producto/${category}`,
         { cache: 'no-store' }).then(r => r.json())
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
