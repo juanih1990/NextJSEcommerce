@@ -5,8 +5,7 @@ const ProductList = async ({ category }) => {
     
    
     const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
-    console.log(baseUrl)
-    const data = await fetch(`${baseUrl}/api/producto/${category}`,
+    const data = await fetch(`${baseUrl}api/producto/${category}`,
         { cache: 'no-store' }).then(r => r.json())
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
