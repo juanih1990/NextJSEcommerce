@@ -9,6 +9,9 @@ export const CartProvaider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [count, setCount] = useState(0);
 
+  const isLocal = process.env.NEXT_PUBLIC_URL_LOCAL; 
+  const baseUrl = isLocal ? process.env.NEXT_PUBLIC_URL_LOCAL : process.env.NEXT_PUBLIC_URL_EXTERNA;
+
   const addToCart = (items) => {
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex((cartItem) => cartItem.id === items.id);
@@ -28,7 +31,7 @@ export const CartProvaider = ({ children }) => {
   // Guardar el carrito en Firebase usando useCallback para evitar recreación en cada renderizado
   const saveCartToFirebase = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/cart', {
+      const response = await fetch(baseUrl + '/api/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

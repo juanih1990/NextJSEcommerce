@@ -2,9 +2,11 @@ import React from 'react'
 import ProductCard from './ProductCard'
 
 const ProductList = async ({ category }) => {
-    console.log("URL_LOCAL:", process.env.NEXT_PUBLIC_URL_LOCAL); 
+    
+    const isLocal = process.env.NEXT_PUBLIC_URL_LOCAL; 
+    const baseUrl = isLocal ? process.env.NEXT_PUBLIC_URL_LOCAL : process.env.NEXT_PUBLIC_URL_EXTERNA;
 
-    const data = await fetch(`${process.env.NEXT_PUBLIC_URL_LOCAL}/api/producto/${category}`,
+    const data = await fetch(`${baseUrl}/api/producto/${category}`,
         { cache: 'no-store' }).then(r => r.json())
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
