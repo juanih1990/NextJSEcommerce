@@ -2,7 +2,8 @@ import React from 'react'
 import CartComponent from '../componentes/CartComponent'
 
 const page = async() => {
-  const data = await fetch('http://localhost:3000/api/cart/cartList',
+  const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+  const data = await fetch(baseUrl +'/api/cart/cartList',
     { cache: 'no-store' }).then(r => r.json())
 
     console.log("PASA POR AWAIT")
