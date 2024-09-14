@@ -10,10 +10,6 @@ const MenuList = ({ open, handleClose }) => {
             href: "/producto"
         },
         {
-            label: "contactanos",
-            href: "/contactanos"
-        },
-        {
             label: "cart",
             href: "/cart"
         },
