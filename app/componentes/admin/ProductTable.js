@@ -15,7 +15,8 @@ const ProductTable = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/producto/all', { cache: 'no-store' });
+                const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+                const response = await fetch(baseUrl + 'api/producto/all', { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
