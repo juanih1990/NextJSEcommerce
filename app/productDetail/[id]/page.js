@@ -2,9 +2,9 @@ import React from 'react'
 
 const ProductDetail = async ({params}) => {
     const { id } = params
-    
+    const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
     // Llamada a la API para obtener los detalles del producto
-    const singleProduct = await fetch(`http://localhost:3000/api/productById/${id}`, { cache: 'no-store' })
+    const singleProduct = await fetch(`${baseUrl}api/productById/${id}`, { cache: 'no-store' })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch product');
