@@ -5,6 +5,8 @@ import Boton from './Boton'
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import { db, storage } from "@/app/firebase/config"
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import Swal from 'sweetalert2';  
+//import 'sweetalert2/src/sweetalert2.scss'; 
 
 
 const createProduct = async (values, file) => {
@@ -24,7 +26,7 @@ const createProduct = async (values, file) => {
         image: fileUrls // Asigna la URL de la imagen
     };
     //const docRef = doc(collectionRef)
-    console.log("Esto trae fileUrls: " , fileUrls)
+    console.log("Esto trae fileUrls: ", fileUrls)
     console.log(JSON.stringify(productData))
     return setDoc(docRef, productData).then(() => console.log("Producto Agregado! ", JSON.stringify(productData)))
 }
@@ -41,7 +43,7 @@ const CreateProduct = () => {
     const [file, setFile] = useState(null)
 
     const handleChange = (e) => {
-        
+
         if (e.target.type === 'file') {
             setFile(e.target.files[0]); // Guardar el archivo seleccionado en el estado
         } else {
@@ -50,13 +52,32 @@ const CreateProduct = () => {
                 [e.target.name]: e.target.value
             });
         }
-        
-       
+
+
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await createProduct(values,file)
+        try {
+            await createProduct(values, file);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Producto agregado',
+                text: 'El producto ha sido agregado exitosamente.',
+                confirmButtonText: 'OK'
+            });
+
+        } catch (error) {
+           
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al agregar el producto. Inténtalo de nuevo.',
+                confirmButtonText: 'OK'
+            });
+            console.error("Error al agregar producto: ", error);
+        }
     }
 
     return (
@@ -117,7 +138,7 @@ const CreateProduct = () => {
                     name='description'
                     onChange={handleChange}
                 ></textarea>
-                <Boton type='submit'>Enviar</Boton>
+                <Boton type='submit'>AGREGAR</Boton>
 
             </form>
 
