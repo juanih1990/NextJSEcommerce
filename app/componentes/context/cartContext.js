@@ -1,68 +1,92 @@
-'use client'
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+'use client'; 
 
-const CartContext = createContext();
+import { createContext, useContext, useEffect, useState } from 'react'
+import { useAuthContext } from './AuthContext'
+
+
+const CartContext = createContext()
 
 export const useCartContext = () => useContext(CartContext);
 
-export const CartProvaider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-  const [count, setCount] = useState(0);
+export const CartProvider = ({ children }) => {
+    const { user } = useAuthContext();
+    const [cart, setCart] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
 
-  const addToCart = (items) => {
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex((cartItem) => cartItem.id === items.id);
+    
+    const fetchCart = async () => {
+        console.log(JSON.stringify(user))
+        if (!user || !user.uid) return
+        setLoading(true);
+        try {
+            const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+            const res = await fetch(`${baseUrl}api/cart/${user.uid}`)
+            if (!res.ok) throw new Error('Error al obtener el carrito')
+            const data = await res.json()
+            setCart(data.products || [])
+        } catch (error) {
+            setError(error.message)
+        } finally {
+            setLoading(false)
+        }
+    };
 
-      if (existingItemIndex !== -1) {
-        return prevCart.map((cartItem, index) =>
-          index === existingItemIndex
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
-      } else {
-        return [...prevCart, { ...items, quantity: 1 }];
-      }
-    });
-  };
+   
+    const addToCart = async (product, quantity) => {
+        if (!user || !user.uid) {
+            setError('Debes estar autenticado para agregar productos al carrito.')
+            return
+        }
 
-  // Guardar el carrito en Firebase usando useCallback para evitar recreación en cada renderizado
-  const saveCartToFirebase = useCallback(async () => {
-    try {
-        const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
-      const response = await fetch(baseUrl + '/api/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cart }), // 'cart' es una dependencia
-      });
+        setLoading(true);
+        const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+        try {
+            const res = await fetch(`${baseUrl}api/cart/${user.uid}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    quantity,
+                    image: product.image,
+                    category: product.category,
+                }),
+            });
 
-      const data = await response.json();
-      if (data.success) {
-        console.log("Carrito guardado exitosamente, ID:", data.id);
-      } else {
-        console.error("Error al guardar el carrito:", data.message);
-      }
-    } catch (error) {
-      console.error("Error en la solicitud para guardar el carrito:", error);
-    }
-  }, [cart]); // 'cart' es la dependencia, se mantiene estable en cada renderizado
+            if (!res.ok) throw new Error('Error al agregar producto al carrito');
+            const data = await res.json();
+            setCart((prev) => {
+                const productExists = prev.find((item) => item.id === product.id);
+                if (productExists) {
+                    return prev.map((item) => 
+                        item.id === product.id 
+                        ? { ...item, quantity: item.quantity + quantity } 
+                        : item
+                    );
+                } else {
+                    return [...prev, { ...product, quantity }];
+                }
+            });
+        } catch (error) {
+            setError(error.message)
+        } finally {
+            setLoading(false)
+        }
+    };
 
-  const increase = (num) => {
-    setCount(count + num);
-  };
+    useEffect(() => {
+        if (user && user.uid) {
+            fetchCart()
+        }
+    }, [user]);
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      saveCartToFirebase();
-    }
-  }, [cart, saveCartToFirebase]); // Incluye saveCartToFirebase como dependencia
-
-  return (
-    <CartContext.Provider
-      value={{ cart, addToCart, increase, count, saveCartToFirebase }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+    return (
+        <CartContext.Provider value={{ cart, addToCart, loading, error }}>
+            {children}
+        </CartContext.Provider>
+    );
 };

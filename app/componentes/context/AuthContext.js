@@ -17,6 +17,8 @@ export const AuthProvider = ({ children }) => {
     uid: null
   })
 
+
+
   const registerUser = async (values) => {
     await createUserWithEmailAndPassword(auth, values.email, values.password)
 
@@ -33,6 +35,9 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async () => {
     await signInWithPopup(auth, providerGoogle)
   }
+
+
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(user)
@@ -62,7 +67,8 @@ export const AuthProvider = ({ children }) => {
         registerUser,
         loginUser,
         logOut,
-        googleLogin
+        googleLogin,
+      
       }}
     >
       {children}

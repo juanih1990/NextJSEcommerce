@@ -1,13 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import AddTocart from './AddTocart'
 import Image from 'next/image'
+import Boton from './Boton'
 
 const ProductCard = ({ title, description, price, category, id, image }) => {
     return (
 
         <div className='max-w-sm w-150 rounded overflow-hidden shadow-lg m-4 bg-white flex flex-col'>
-            <Link href={`/productDetail/${id}`} className="flex flex-col h-full">
                 <div className='py-4 px-6 flex flex-col h-full'>
                     <div className='font-bold text-xl mb-2 text-gray-700 text-center'>
                         {title}
@@ -33,18 +32,13 @@ const ProductCard = ({ title, description, price, category, id, image }) => {
                         {category}
                     </span>
                     <span className='inline-block bg-gray-200 rounded-full px-5   py-1 text-sm font-semibold text-gray-700 bg-sky-200'>
-                        {price}
+                        usd {price}
                     </span>
                 </div>
-            </Link>
-            <div className='px-6 pb-4'>
-                <AddTocart
-                    title={title}
-                    description={description}
-                    price={price}
-                    category={category}
-                    id={id}
-                />
+            <div className='px-6 pb-4 flex justify-end py-5'>
+                <Link href={`/productDetail/${id}`}>
+                    <Boton  className='bg-blue-400 '>Agregar al carrito</Boton>
+                </Link>
             </div>
         </div>
 
