@@ -1,24 +1,22 @@
-'use client'; 
+'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useAuthContext } from './AuthContext'
 
-
-const CartContext = createContext()
+const CartContext = createContext();
 
 export const useCartContext = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
     const { user } = useAuthContext();
-    const [cart, setCart] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
+    const [cart, setCart] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     
-    const fetchCart = async () => {
-        console.log(JSON.stringify(user))
+    const fetchCart = useCallback(async () => {
         if (!user || !user.uid) return
-        setLoading(true);
+        setLoading(true)
         try {
             const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
             const res = await fetch(`${baseUrl}api/cart/${user.uid}`)
@@ -30,17 +28,16 @@ export const CartProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
-    };
+    }, [user]);
 
-   
     const addToCart = async (product, quantity) => {
         if (!user || !user.uid) {
             setError('Debes estar autenticado para agregar productos al carrito.')
-            return
+            return;
         }
 
-        setLoading(true);
-        const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+        setLoading(true)
+        const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
         try {
             const res = await fetch(`${baseUrl}api/cart/${user.uid}`, {
                 method: 'POST',
@@ -55,20 +52,20 @@ export const CartProvider = ({ children }) => {
                     image: product.image,
                     category: product.category,
                 }),
-            });
+            })
 
-            if (!res.ok) throw new Error('Error al agregar producto al carrito');
-            const data = await res.json();
+            if (!res.ok) throw new Error('Error al agregar producto al carrito')
+            const data = await res.json()
             setCart((prev) => {
                 const productExists = prev.find((item) => item.id === product.id);
                 if (productExists) {
-                    return prev.map((item) => 
-                        item.id === product.id 
-                        ? { ...item, quantity: item.quantity + quantity } 
-                        : item
+                    return prev.map((item) =>
+                        item.id === product.id
+                            ? { ...item, quantity: item.quantity + quantity }
+                            : item
                     );
                 } else {
-                    return [...prev, { ...product, quantity }];
+                    return [...prev, { ...product, quantity }]
                 }
             });
         } catch (error) {
@@ -76,17 +73,18 @@ export const CartProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
-    };
+    }
 
+    
     useEffect(() => {
         if (user && user.uid) {
-            fetchCart()
+            fetchCart();
         }
-    }, [user]);
+    }, [user, fetchCart])
 
     return (
         <CartContext.Provider value={{ cart, addToCart, loading, error }}>
             {children}
         </CartContext.Provider>
-    );
-};
+    )
+}

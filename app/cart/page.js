@@ -1,16 +1,45 @@
-'use client'
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import CartComponent from '../componentes/CartComponent';
 import { useAuthContext } from '../componentes/context/AuthContext';
 
-const page = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
+const Page = () => {
   const { user } = useAuthContext()
-  const res = await fetch(`${baseUrl}api/cart/${user.uid}`, { cache: 'no-store' });
-  const data = await res.json();
+  const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const cartItems = data.products || [];
- 
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+
+      try {
+        const res = await fetch(`${baseUrl}api/cart/${user.uid}`, { cache: 'no-store' })
+        if (!res.ok) {
+          throw new Error('Error al obtener el carrito')
+        }
+        const data = await res.json()
+        setCartItems(data.products || [])
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    };
+
+    if (user) {
+      fetchCartItems()
+    }
+  }, [user])
+
+  if (loading) {
+    return <div>Cargando...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -18,6 +47,6 @@ const page = async () => {
       <CartComponent data={cartItems} />
     </div>
   );
-}
+};
 
-export default page;
+export default Page
