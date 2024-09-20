@@ -12,6 +12,7 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [count , setCount ] = useState(0)
 
     
     const fetchCart = useCallback(async () => {
@@ -68,6 +69,7 @@ export const CartProvider = ({ children }) => {
                     return [...prev, { ...product, quantity }]
                 }
             });
+            
         } catch (error) {
             setError(error.message)
         } finally {
@@ -75,6 +77,10 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    useEffect(() => {
+        const totalQuantity = cart.reduce((total, product) => total + product.quantity, 0);
+        setCount(totalQuantity);
+    }, [cart])
     
     useEffect(() => {
         if (user && user.uid) {
@@ -83,7 +89,7 @@ export const CartProvider = ({ children }) => {
     }, [user, fetchCart])
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, loading, error }}>
+        <CartContext.Provider value={{ cart, addToCart, loading, error , count }}>
             {children}
         </CartContext.Provider>
     )
