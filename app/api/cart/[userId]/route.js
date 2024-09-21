@@ -61,6 +61,7 @@ export async function POST(req, { params }) {
 export async function DELETE(req, { params }) {
   const { userId } = params
   const body = await req.json()
+  console.log("ENTRO AL DELETE" + JSON.stringify(body))
 
   try {
     const cartRef = doc(db, 'carts', userId)
@@ -71,7 +72,8 @@ export async function DELETE(req, { params }) {
     }
 
     const cartData = cartSnapshot.data();
-    const updatedProducts = cartData.products.filter(product => product.id !== body.productId)
+    console.log(JSON.stringify(cartData))
+    const updatedProducts = cartData.products.filter(product => product.id !== body.id)
 
     await setDoc(cartRef, { products: updatedProducts })
 

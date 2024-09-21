@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useCartContext } from './context/cartContext'
 
 const CartComponent = ({ data }) => {
-  const { cart, setCart, setCount } = useCartContext()
+  const { cart, setCart, setCount , deleteToCartItem} = useCartContext()
   const [productCart, setProductCart] = useState([])
 
   useEffect(() => {
@@ -16,10 +16,15 @@ const CartComponent = ({ data }) => {
 
   }, [data]);
 
+  
   const handleRemove = (id) => {
+    console.log("cart" + JSON.stringify(cart))
     const updatedCart = cart.filter(item => item.id !== id)
+    deleteToCartItem(id)
+    setProductCart(updatedCart)
     setCart(updatedCart)
     setCount(updatedCart.length)
+   
   }
 
   return (

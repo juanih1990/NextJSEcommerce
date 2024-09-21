@@ -31,6 +31,32 @@ export const CartProvider = ({ children }) => {
         }
     }, [user]);
 
+    const deleteToCartItem = async (productCart) => {
+        if (!user || !user.uid) {
+            setError('Debes estar autenticado para agregar productos al carrito.')
+            return;
+        }
+        setLoading(true)
+        const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
+        console.log(productCart)
+        try{
+            const res = await fetch(`${baseUrl}api/cart/${user.uid}` , {
+                method: 'DELETE',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: productCart // Asegúrate de que envías la propiedad "id"
+                }),
+            })
+        }
+        catch (error) {
+            setError(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const addToCart = async (product, quantity) => {
         if (!user || !user.uid) {
             setError('Debes estar autenticado para agregar productos al carrito.')
@@ -89,7 +115,7 @@ export const CartProvider = ({ children }) => {
     }, [user, fetchCart])
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, loading, error , count }}>
+        <CartContext.Provider value={{ cart, addToCart, loading, error , count , setCart , setCount , deleteToCartItem  }}>
             {children}
         </CartContext.Provider>
     )
