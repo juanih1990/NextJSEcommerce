@@ -8,7 +8,7 @@ export async function POST(req) {
     try {
         // Obtener el FormData de la solicitud
         const formData = await req.formData();
-
+        console.log("STORAGE "+ process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET)
         const values = JSON.parse(formData.get('values')); // Extraer y parsear los valores JSON
         const file = formData.get('file'); // Obtener el archivo
         
