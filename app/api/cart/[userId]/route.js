@@ -72,7 +72,6 @@ export async function DELETE(req, { params }) {
     }
 
     const cartData = cartSnapshot.data();
-    console.log(JSON.stringify(cartData))
     const updatedProducts = cartData.products.filter(product => product.id !== body.id)
 
     await setDoc(cartRef, { products: updatedProducts })

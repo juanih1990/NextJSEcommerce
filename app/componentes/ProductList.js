@@ -2,11 +2,12 @@ import React from 'react'
 import ProductCard from './ProductCard'
 
 const ProductList = async ({ category }) => {
+
+    const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
     
-   
-    const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
-    const data = await fetch(`${baseUrl}api/producto/${category}`,
-        { cache: 'no-store' }).then(r => r.json())
+    // Realizamos la solicitud en el servidor
+    const data = await fetch(`${baseUrl}api/producto/${category}`, { cache: 'no-store' }).then(r => r.json());
+
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
             {
