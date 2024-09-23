@@ -103,11 +103,11 @@ const ProductTable = () => {
                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                         Eliminar
                                     </button>
-                                    <button
+                                    {/*  <button
                                         onClick={() => handleRemove(item.id)}
                                         className="bg-green-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded ml-1">
                                         Editar
-                                    </button>
+                                    </button>*/}
                                 </div>
                             </td>
                         </tr>
