@@ -58,7 +58,7 @@ const ProductTable = () => {
             DeleteProduct(idProducto)
         }
 
-    }, [data])
+    }, [data,idProducto])
 
     const handleRemove = (id) => {
         console.log("ESTE ES EL ID ", id)
