@@ -42,7 +42,7 @@ const CreateProduct = () => {
         try {
             console.log("USUARIO: "  + JSON.stringify(user) )
             const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
-           
+            console.log(baseUrl)
             const formData = new FormData();
             formData.append('file', file); 
             formData.append('values', JSON.stringify(values)); 
