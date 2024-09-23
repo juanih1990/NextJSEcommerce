@@ -1,5 +1,6 @@
 import { doc, collection, setDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
+import { storage } from "@/app/firebase/config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"; // Asegúrate de importar uploadBytes
 import { storage } from "@/app/firebase/config"; // Asegúrate de importar el storage
 import { NextResponse } from "next/server"; // Importa NextResponse para devolver respuestas adecuadas
