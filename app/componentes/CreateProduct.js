@@ -2,36 +2,17 @@
 import React from 'react'
 import { useState } from 'react'
 import Boton from './Boton'
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
-import { db, storage } from "@/app/firebase/config"
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import Swal from 'sweetalert2';  
-//import 'sweetalert2/src/sweetalert2.scss'; 
-
+import { useAuthContext } from './context/AuthContext'
 
 const createProduct = async (values, file) => {
-    const collectionRef = collection(db, 'Productos'); // Referencia a la colección
-    const docRef = doc(collectionRef);
-    console.log(file)
-    let fileUrls = '';
-    if (file) { // Verificar si hay un archivo
-        const storageRef = ref(storage, docRef.id); // Crear una referencia de almacenamiento con el ID del documento
-        const fileSnapshot = await uploadBytes(storageRef, file); // Subir el archivo
-        fileUrls = await getDownloadURL(fileSnapshot.ref); // Obtener la URL de descarga
-    }
-
-
-    const productData = {
-        ...values,
-        image: fileUrls // Asigna la URL de la imagen
-    };
-    //const docRef = doc(collectionRef)
-    console.log("Esto trae fileUrls: ", fileUrls)
-    console.log(JSON.stringify(productData))
-    return setDoc(docRef, productData).then(() => console.log("Producto Agregado! ", JSON.stringify(productData)))
+    
 }
 
+
 const CreateProduct = () => {
+    const { user } = useAuthContext()
+    const [error, setError] = useState(null)
     const [values, setValues] = useState({
         title: '',
         description: '',
@@ -59,8 +40,23 @@ const CreateProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            await createProduct(values, file);
+            console.log("USUARIO: "  + JSON.stringify(user) )
+            const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+           
+            const formData = new FormData();
+            formData.append('file', file); 
+            formData.append('values', JSON.stringify(values)); 
 
+            const res = await fetch(`${baseUrl}api/producto`, {
+                method: 'POST',  
+                body: formData,  
+                cache: 'no-store'
+            });
+           
+            if (!res.ok) {
+              throw new Error('Error al crear el nuevo producto')
+            }
+           
             Swal.fire({
                 icon: 'success',
                 title: 'Producto agregado',
@@ -69,7 +65,7 @@ const CreateProduct = () => {
             });
 
         } catch (error) {
-           
+            setError(error.message)
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
