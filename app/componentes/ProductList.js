@@ -6,13 +6,12 @@ import { useProductContext } from './context/productContext'
 const ProductList =  ({ data }) => {
     const { product, setProduct} =  useProductContext()
 
-    //faltara hacer un setProduct pero desde product/category
     useEffect(()=>{
-        if(product){
+        if(data){
             setProduct(data)
         }
        
-    }, [product])
+    }, [data])
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
             {

@@ -7,11 +7,13 @@ import { useAuthContext } from './context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useProductContext } from './context/productContext';
 
-const CreateProduct = ({ product }) => {
+
+const CreateProduct = ({product}) => {
     const { user } = useAuthContext()
     const { fetchProduct } = useProductContext()
     const [error, setError] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
+    const [loading, setLoading] = useState(true)
     const [values, setValues] = useState({
         title: '',
         description: '',
@@ -56,7 +58,8 @@ const CreateProduct = ({ product }) => {
                 if (!res.ok) {
                     throw new Error('Error al actualizar el producto')
                 }
-
+            
+              
                 fetchProduct()
 
                 Swal.fire({
@@ -106,6 +109,7 @@ const CreateProduct = ({ product }) => {
         }
     }
     useEffect(() => {
+       
         if (product) {
             setValues({
                 title: product.title,
@@ -115,10 +119,22 @@ const CreateProduct = ({ product }) => {
                 category: product.category,
                 image: product.image
             })
+            
             setImagePreview(product.image)
+
+            setTimeout(() => {
+                setLoading(false); 
+            }, 1000); 
+
+        } else {
+            setLoading(false); 
         }
+        
     }, [product])
 
+    if (loading) {
+        return <div>Cargando...</div>; 
+    }
   
     return (
         <div className='container m-auto mt-6 max-w-lg'>

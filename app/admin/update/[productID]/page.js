@@ -2,28 +2,46 @@
 import CreateProduct from '@/app/componentes/CreateProduct'
 import React, { useEffect, useState } from 'react'
 
-const page = ({ params }) => {
-    const { productID } = params
-    const [product , setProduct] = useState([])
-    const [error, setError] = useState(null)
+const Page = ({ params }) => {
+    const { productID } = params;
+    const [product, setProduct] = useState(null);  // Iniciar como null, para diferenciar de cuando se cargan los datos.
+    const [error, setError] = useState(null);
 
-    useEffect( () => {
+    useEffect(() => {
+       
+
         const fetchData = async () => {
-            try {   
+            try {
                 const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
-                const data = await fetch(`${baseUrl}api/productById/${productID}`, { cache: 'no-store' }).then(r => r.json())
+                const res = await fetch(`${baseUrl}api/productById/${productID}`, { cache: 'no-store' })
+
+                if (!res.ok) {
+                    throw new Error(`Error al obtener el producto: ${res.statusText}`)
+                }
+
+                const data = await res.json()
                 setProduct(data)
+                console.log("data:", data)
             } catch (error) {
-                setError(error)
+                console.error("Error en fetchData:", error)
+                setError(error.message || 'Hubo un error al cargar el producto')
             }
-        }
-        fetchData()
-    }, [] )
+        };
+
+        fetchData();
+    }, [productID]);  
+
+ 
+
     return (
         <div>
-            <CreateProduct product={product} />
+            {error ? (
+                <div>Error: {error}</div>
+            ) : (
+                <CreateProduct product={product} />
+            )}
         </div>
-    )
+    );
 }
 
-export default page
+export default Page;

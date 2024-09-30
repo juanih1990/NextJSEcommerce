@@ -10,11 +10,10 @@ export const useProductContext = () => useContext(ProductContext);
 export const ProductProvider = ({ children }) => {
     const { user } = useAuthContext();
     const [product, setProduct] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null);
 
     const fetchProduct = useCallback(async () => {
-        console.log("ENTRO AL FETCH" , JSON.stringify(user))
         if (!user || !user.uid) return
         setLoading(true)
         try {
