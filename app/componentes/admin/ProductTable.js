@@ -58,7 +58,7 @@ const ProductTable = () => {
             DeleteProduct(idProducto)
         }
 
-    }, [data,idProducto])
+    }, [data, idProducto])
 
     const handleRemove = (id) => {
         console.log("ESTE ES EL ID ", id)
@@ -103,11 +103,12 @@ const ProductTable = () => {
                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                         Eliminar
                                     </button>
-                                    {/*  <button
-                                        onClick={() => handleRemove(item.id)}
-                                        className="bg-green-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded ml-1">
-                                        Editar
-                                    </button>*/}
+                                    <Link href={`../../admin/update/${item.id}`}>
+                                        <button
+                                            className="bg-green-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded ml-1">
+                                            Editar
+                                        </button>
+                                    </Link>
                                 </div>
                             </td>
                         </tr>

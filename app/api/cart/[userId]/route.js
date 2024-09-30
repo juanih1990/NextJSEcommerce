@@ -73,7 +73,6 @@ export async function DELETE(req, { params }) {
 
     const cartData = cartSnapshot.data();
     const updatedProducts = cartData.products.filter(product => product.id !== body.id)
-
     await setDoc(cartRef, { products: updatedProducts })
 
     return NextResponse.json({ message: 'Producto eliminado' }, { status: 200 })

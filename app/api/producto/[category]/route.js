@@ -16,5 +16,6 @@ export async function GET(request, { params }) {
         ...doc.data()
     }));
 
+    
     return NextResponse.json(docs)
 }

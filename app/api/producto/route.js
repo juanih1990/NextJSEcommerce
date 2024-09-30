@@ -1,4 +1,4 @@
-import { doc, collection, setDoc } from "firebase/firestore";
+import { doc, collection, setDoc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { storage } from "@/app/firebase/config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"; // Asegúrate de importar uploadBytes
@@ -38,3 +38,26 @@ export async function POST(req) {
         return NextResponse.json({ message: 'Error al agregar el producto', error: error.message }, { status: 500 });
     }
 }
+export async function GET(req) {
+    try {
+      const productosRef = collection(db, "Productos");
+      const productSnapshot = await getDocs(productosRef);
+  
+      // Verificar si hay documentos en la colección
+      if (productSnapshot.empty) {
+        return NextResponse.json({ products: [] }, { status: 200 });
+      }
+  
+      // Recorrer los documentos y extraer sus datos
+      const products = productSnapshot.docs.map(doc => ({
+        id: doc.id,   // Si necesitas el ID del documento
+        ...doc.data() // Extrae los datos del documento
+      }));
+  
+      return NextResponse.json({ products }, { status: 200 });
+      
+    } catch (error) {
+      console.error('Error al obtener el producto:', error);
+      return NextResponse.json({ error: 'Error al obtener el producto' }, { status: 500 });
+    }
+  }

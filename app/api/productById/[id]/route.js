@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc , updateDoc  } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 
 export async function GET(request, { params }) {
@@ -39,5 +39,29 @@ export async function DELETE(request, { params }) {
     else {
         // Si no se encuentra el documento, devolver un error 404
         return NextResponse.json({ error: "Error al eliminar el producto" }, { status: 404 });
+    }
+}
+export async function PUT(request, { params }) {
+    console.log("ENTRA AL PUT")
+    const { id } = params;
+
+    // Referencia directa al documento con el ID especificado
+    const productoRef = doc(db, "Productos", id);
+
+    // Obtener el cuerpo de la solicitud para extraer los datos que se quieren actualizar
+    const body = await request.json();
+
+    // Verifico si el documento existe antes de intentar actualizarlo
+    const docSnapshot = await getDoc(productoRef);
+
+    if (docSnapshot.exists()) {
+        // Actualizo el documento con los datos proporcionados en el cuerpo de la solicitud
+        await updateDoc(productoRef, body);
+
+        // Devuelvo una respuesta de éxito
+        return NextResponse.json({ message: "Producto actualizado con éxito" }, { status: 200 });
+    } else {
+        // Si no se encuentra el documento, devolver un error 404
+        return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
     }
 }

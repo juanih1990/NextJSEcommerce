@@ -1,17 +1,22 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import ProductCard from './ProductCard'
+import { useProductContext } from './context/productContext'
 
-const ProductList = async ({ category }) => {
+const ProductList =  ({ data }) => {
+    const { product, setProduct} =  useProductContext()
 
-    const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA;
-    
-    // Realizamos la solicitud en el servidor
-    const data = await fetch(`${baseUrl}api/producto/${category}`, { cache: 'no-store' }).then(r => r.json());
-
+    //faltara hacer un setProduct pero desde product/category
+    useEffect(()=>{
+        if(product){
+            setProduct(data)
+        }
+       
+    }, [product])
     return (
         <div className='flex flex-wrap justify-center item-center text-white my-4'>
             {
-                data.map((product, index) => {
+                product.map((product, index) => {
                     return (
                         <ProductCard
                             key={product.id}

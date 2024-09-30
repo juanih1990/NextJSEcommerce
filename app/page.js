@@ -2,10 +2,12 @@ import React from 'react';
 import ProductList from './componentes/ProductList';
 
 
-const Page = () => {
+const Page = async() => {
+  const baseUrl = process.env.NEXT_PUBLIC_URL_LOCAL || process.env.NEXT_PUBLIC_URL_EXTERNA
+  const product = await fetch(`${baseUrl}api/producto/all`, { cache: 'no-store' }).then(r => r.json());
   return (
     <div >
-       <ProductList category={'all'}  />
+      <ProductList data={product}/>
     </div>
   );
 };
